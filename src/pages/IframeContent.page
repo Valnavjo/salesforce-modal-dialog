@@ -1,0 +1,73 @@
+<apex:page standardController="Case" extensions="IframeContentController"
+		   recordSetVar="cases" showHeader="false" sidebar="false">
+
+<head>
+    <apex:includeScript value="{!URLFOR($Resource.jQuery, '/jquery-1.8.2.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.jQuery, '/postmessage/jquery.ba-postmessage.js')}"/>
+
+    <script type="text/javascript">
+        var j$ = jQuery.noConflict();
+
+        var parent_domain = '{!$CurrentPage.parameters.parent_domain}';
+
+        j$(document).ready(function() {
+            j$('input[id$=btnCloseModalDialog]').click(function(event) {
+                event.preventDefault();
+                closeModalDialog();
+            });
+        });
+        
+		function closeModalDialog() {
+		    var cross_result = new Object();
+		    cross_result.action = 'close_modal_dialog';
+		
+		    j$.postMessage(
+		        cross_result,
+		        parent_domain,
+		        parent
+		    );
+		}
+		
+		function closeModalDialogAndRedirect() {
+			var redirectUrl = j$('input[id$=redirectUrl]').val();
+			
+		    var cross_result = new Object();
+		    cross_result.action = 'close_modal_dialog_redirect';
+		    cross_result.redirect_url = redirectUrl;
+		
+		    j$.postMessage(
+		        cross_result,
+		        parent_domain,
+		        parent
+		    );
+		}
+    </script>
+</head>
+
+<apex:form >
+
+    <apex:pageBlock >
+    
+		<apex:pageBlockButtons >
+		    <apex:commandButton id="btnCloseModalDialog" value="Close modal dialog" />
+		    <apex:commandButton id="btnLogicCloseRedirectDialog" value="Perform logic, close dialog and redirect"
+								action="{!executeLogic}" status="statusLogic" rerender="opnlHiddelFields"
+								oncomplete="closeModalDialogAndRedirect();" />
+		</apex:pageBlockButtons>
+		
+		<apex:outputPanel id="opnlHiddelFields" layout="block">
+			<apex:inputHidden id="redirectUrl" value="{!redirectUrl}" />
+		</apex:outputPanel>
+		
+		<apex:actionStatus startText="Executing logic..."  stopText="" id="statusLogic"/>
+    
+        <apex:pageBlockTable value="{!cases}" var="c">
+            <apex:column value="{!c.CaseNumber}" />
+            <apex:column value="{!c.Subject}" />
+        </apex:pageBlockTable>
+    
+    </apex:pageBlock>
+
+</apex:form>
+
+</apex:page>

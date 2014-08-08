@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <webLinks>
+        <fullName>open_modal_dialog</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Open modal dialog</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&apos;/soap/ajax/26.0/connection.js&apos;)}
+
+{!REQUIRESCRIPT(&apos;/js/functions.js&apos;)}
+
+{!REQUIRESCRIPT(&apos;/resource/jQuery/jquery-1.8.2.min.js&apos;)}
+
+{!REQUIRESCRIPT(&apos;/resource/jQuery/ui/jquery-ui-1.9.1.custom.min.js&apos;)}
+
+{!REQUIRESCRIPT(&apos;/resource/jQuery/postmessage/jquery.ba-postmessage.js&apos;)}
+
+{!REQUIRESCRIPT(&apos;/resource/jQuery/bbq/jquery.ba-bbq.min.js&apos;)}
+
+
+
+requireCssFile(&apos;/resource/jQuery/ui/css/ui-lightness/jquery-ui-1.9.1.custom.min.css&apos;);
+
+
+
+function requireCssFile(filename) {
+
+	var fileref = document.createElement(&apos;link&apos;);
+
+	fileref.setAttribute(&apos;rel&apos;, &apos;stylesheet&apos;);
+
+	fileref.setAttribute(&apos;type&apos;, &apos;text/css&apos;);
+
+	fileref.setAttribute(&apos;href&apos;, filename);
+
+	document.getElementsByTagName(&apos;head&apos;)[0].appendChild(fileref);
+
+}
+
+
+
+var j$ = jQuery.noConflict();
+
+
+
+var iframe_url = &apos;{!URLFOR(&quot;/apex/IframeContent&quot;)}&apos;;
+
+var child_domain = iframe_url.substring(0, iframe_url.indexOf(&apos;/&apos;, 9));
+
+var parent_domain = window.location.protocol + &apos;//&apos; + window.location.host;
+
+
+
+j$.receiveMessage(
+
+	function(e){
+
+		var cross_result = j$.deparam(e.data);
+
+		if (cross_result.action == &apos;close_modal_dialog&apos;) {
+
+			j$modalDialog.dialog(&apos;close&apos;);
+
+		}
+
+	},
+
+	child_domain
+
+);
+
+
+
+var j$modalDialog = j$(&apos;&lt;div&gt;&lt;/div&gt;&apos;)
+
+       .html(&apos;&lt;iframe id=&quot;iframeContentId&quot; src=&quot;&apos; + iframe_url + &apos;?parent_domain=&apos; + parent_domain + &apos;&quot; frameborder=&quot;0&quot; height=&quot;100%&quot; width=&quot;100%&quot; marginheight=&quot;0&quot; marginwidth=&quot;0&quot; scrolling=&quot;no&quot; /&gt;&apos;)
+
+       .dialog({
+
+			autoOpen: false,
+
+			title: &apos;My Modal Dialog&apos;,
+
+			resizable: false,
+
+			width: 400,
+
+			height: 400,
+
+			autoResize: true,
+
+			modal: true,
+
+			draggable: false
+
+});
+
+
+
+j$modalDialog.dialog(&apos;open&apos;);</url>
+    </webLinks>
+</CustomObject>
